@@ -9,6 +9,7 @@ namespace Tasky.Data
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{
+/*troll*/
 		}
 		public DbSet<Project>? Projects { get; set; }
 		public DbSet<Category>? Categories { get; set; }
