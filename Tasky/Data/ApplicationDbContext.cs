@@ -8,6 +8,7 @@ namespace Tasky.Data
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{
+/*troll*/
 		}
 	}
 }
