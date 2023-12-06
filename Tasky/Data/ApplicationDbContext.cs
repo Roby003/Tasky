@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Tasky.Models;
 
 namespace Tasky.Data
 {
@@ -9,5 +10,7 @@ namespace Tasky.Data
 			: base(options)
 		{
 		}
+		public DbSet<Project>? Projects { get; set; }
+		public DbSet<Category>? Categories { get; set; }
 	}
 }

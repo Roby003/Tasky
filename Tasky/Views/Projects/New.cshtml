@@ -1,0 +1,13 @@
+﻿@model Tasky.Models.Project
+
+<div >
+	@using (Html.BeginForm(actionName: "New", controllerName: "Projects", method:FormMethod.Post))
+	{
+		@Html.Label("Name","ProjectName")
+		<br/>
+		@Html.TextBox("Name",null,new {@class="form-control"})
+		@Html.ValidationMessage("Name",null, new {@class="text-danger"})
+		
+		<button type="submit">Create a project</button>
+	}
+</div>
