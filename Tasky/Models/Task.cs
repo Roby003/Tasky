@@ -1,6 +1,7 @@
 ﻿namespace Tasky.Models
 {
-    public class Tasks
+    public class Task
     {
+
     }
 }
