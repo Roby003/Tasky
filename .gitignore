@@ -5,7 +5,8 @@
 
 #Human made
 appsettings.json
-
+serviceDependencies.json
+serviceDependencies.local.json
 # User-specific files
 *.rsuser
 *.suo
