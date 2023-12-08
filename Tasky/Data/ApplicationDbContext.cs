@@ -4,12 +4,12 @@ using Tasky.Models;
 
 namespace Tasky.Data
 {
-	public class ApplicationDbContext : IdentityDbContext
-	{
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    {
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{
-/*troll*/dsadasd
+
 		}
 		public DbSet<Project>? Projects { get; set; }
 		public DbSet<Category>? Categories { get; set; }
