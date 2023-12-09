@@ -29,22 +29,38 @@ namespace Tasky.Controllers
 		[Authorize(Roles = "User,Admin")]
 		[HttpPost]
 		public IActionResult New(Project project) {
-
-			project.OrganizerId = _userManager.GetUserId(User);
+			
+			string id = _userManager.GetUserId(User);
+            project.OrganizerId = id;
+			
 			if (ModelState.IsValid)
 			{
 				db.Projects.Add(project);
+				
+                db.SaveChanges();
+                ApplicationUserProject projectUser = new ApplicationUserProject();
+                projectUser.ProjectId = project.Id;
+                projectUser.UserId = id;
+                db.ApplicationUserProjects.Add(projectUser);
 				db.SaveChanges();
-				return Redirect("/Projects/Show/" + project.Id);
+                return Redirect("/Projects/Show/" + project.Id);
 			}
 			else return View(project);
 		}
 
 		public IActionResult Show(int id)
 		{
-			Project project=db.Projects.Include("Users").Include("Categories").Where(m=>m.Id== id).First();
-			return View(project);
-		}
+            Project project = db.Projects.Include("ApplicationUsers").Include("Categories").Where(m => m.Id == id).First();
+
+
+			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
+			{
+				return View(project);
+			}
+
+			return RedirectToAction("Index");
+
+        }
 		[HttpPost]
 		public IActionResult Show([FromForm] Category category)
 		{

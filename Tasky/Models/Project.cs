@@ -13,8 +13,9 @@ namespace Tasky.Models
 		
 		public string? OrganizerId { get; set; }
 		public virtual ICollection<Category>? Categories { get; set; }
-		public virtual ICollection<ApplicationUser> Users { get; set; }
+		
+        public virtual ICollection<ApplicationUserProject>? ApplicationUsers { get; set; }
 
 
-	}
+    }
 }
