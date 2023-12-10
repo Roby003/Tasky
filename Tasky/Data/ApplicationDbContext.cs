@@ -13,7 +13,7 @@ namespace Tasky.Data
 
         }
         public DbSet<Project>? Projects { get; set; }
-        public DbSet<Category>? Categories { get; set; }
+        public DbSet<Models.Task>? Tasks { get; set; }
         public DbSet<ApplicationUser>? ApplicationUsers { get; set; }
         public DbSet<ApplicationUserProject>? ApplicationUserProjects { get; set; }
 

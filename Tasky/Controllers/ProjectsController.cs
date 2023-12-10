@@ -50,7 +50,7 @@ namespace Tasky.Controllers
 
 		public IActionResult Show(int id)
 		{
-            Project project = db.Projects.Include("ApplicationUsers").Include("Categories").Where(m => m.Id == id).First();
+            Project project = db.Projects.Include("ApplicationUsers").Include("Tasks").Where(m => m.Id == id).First();
 
 
 			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
@@ -62,18 +62,18 @@ namespace Tasky.Controllers
 
         }
 		[HttpPost]
-		public IActionResult Show([FromForm] Category category)
+		public IActionResult Show([FromForm] Models.Task task)
 		{
 
-			Project project = db.Projects.Find(category.ProjectId);
+			Project project = db.Projects.Find(task.ProjectId);
 			if (ModelState.IsValid)
 			{
 				if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
 				{
-					db.Categories.Add(category);
+					db.Tasks.Add(task);
 					db.SaveChanges();
 
-					return View(project);
+					return View("/Projects/Show/" + task.ProjectId);
 				}
 				else
 				{
