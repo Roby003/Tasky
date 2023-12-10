@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using System.Reflection.Metadata.Ecma335;
 using Tasky.Data;
 using Tasky.Models;
@@ -61,6 +62,7 @@ namespace Tasky.Controllers
 			return RedirectToAction("Index");
 
         }
+		/*Show folosit pentru a adauga sau a edita taskuri*/
 		[HttpPost]
 		public IActionResult Show([FromForm] Models.Task task)
 		{
@@ -70,11 +72,22 @@ namespace Tasky.Controllers
 			{
 				if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
 				{
-					db.Tasks.Add(task);
-					db.SaveChanges();
+                    Models.Task t = db.Tasks.Find(task.Id);
+                    if (t != null)
+					{
+						t.Descriere = task.Descriere;
+						t.DataFinalizare = task.DataFinalizare;
+						t.DataStart= task.DataStart;
+						t.Media = task.Media;
+                    }
+					else
+					{
+                        db.Tasks.Add(task);
+                    }
+                    db.SaveChanges();
 
-					return View("/Projects/Show/" + task.ProjectId);
-				}
+                    return Redirect("/Projects/Show/" + project.Id);
+                }
 				else
 				{
 					TempData["message"] = "you can't create a category if you are not an organizer";
@@ -88,7 +101,9 @@ namespace Tasky.Controllers
 		}
 		public IActionResult Index()
 		{
-			return View();
+			ApplicationUser user = db.ApplicationUsers.Include("Projects.Project").Where(m => m.Id.Equals(_userManager.GetUserId(User))).First();
+
+            return View(user);
 		}
 	}
 }

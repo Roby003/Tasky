@@ -4,34 +4,31 @@
 @{
 }
 @model Tasky.Models.Project
-<h5 class="card-title"> @Model.Name </h5>
+<h2 class="card-title"> @Model.Name </h2>
 
 
-<div class="card-body">
+@* <div class="card-body">
 
     <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Name</h3>
 
     <div class="card-text"></div>
 
 </div>
+ *@
 
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <title>Trello-like Layout</title>
-    <style>
-        .column {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px;
-            min-height: 100px;
-        }
-    </style>
-</head>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<title>Trello-like Layout</title>
+<style>
+    .column {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+        min-height: 100px;
+    }
+</style>
 
 
 <div class="container-fluid mt-4">
@@ -41,19 +38,26 @@
                 <h2>Not Started</h2>
                 @foreach (var task in Model.Tasks)
                 {
-                    if(task.Status == "notstarted")
+                    if (task.Status == "notstarted")
                     {
                         <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
-                                <p class="card-text"><strong>Status:</strong> @task.Status</p>
+                                <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                @* edit task *@
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    Edit Task
+                                </button>
+                                @Html.Partial("TaskModa", task)
                             </div>
                         </div>
+
+
+                        
                     }
-                   
                 }
                 <br />
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
@@ -71,9 +75,14 @@
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
-                                <p class="card-text"><strong>Status:</strong> @task.Status</p>
+                                <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                @* edit task *@
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    Edit Task
+                                </button>
+                                @Html.Partial("TaskModa", task)
                             </div>
                         </div>
                     }
@@ -92,9 +101,14 @@
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
-                                <p class="card-text"><strong>Status:</strong> @task.Status</p>
+                                <p class="card-text"><strong>Status:</strong><span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                @* edit task *@
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    Edit Task
+                                </button>
+                                @Html.Partial("TaskModa", task)
                             </div>
                         </div>
                     }
@@ -104,8 +118,7 @@
         </div>
     </div>
 </div>
-actionName: "New", controllerName: "Articles",
-            method: FormMethod.Post)
+
 <form method="post" asp-controller="Tasks" asp-action="UpdateStatus" id="updateStatusForm">
     <input type="hidden" name="taskId" id="taskId" />
     <input type="hidden" name="newStatus" id="newStatus" />
@@ -119,15 +132,20 @@ actionName: "New", controllerName: "Articles",
         item.addEventListener("dragstart", function (e) {
             let selected = e.target;
             let taskId = selected.dataset.taskId;
+            let statusElement = selected.querySelector('.card-text span');
+            console.log(statusElement.innerText);
+
             left.addEventListener("dragover", function (e) {
                 e.preventDefault();
             });
             left.addEventListener("drop", function (e) {
                 left.appendChild(selected);
                 selected = null;
-                updateTaskStatus(taskId, "notstarted");
-
-
+                if (statusElement.innerText != "notstarted") {
+                    updateTaskStatus(taskId, "notstarted");
+                    statusElement.innerText = "notstarted";
+                }
+                
             });
             right.addEventListener("dragover", function (e) {
                 e.preventDefault();
@@ -135,7 +153,11 @@ actionName: "New", controllerName: "Articles",
             right.addEventListener("drop", function (e) {
                 right.appendChild(selected);
                 selected = null;
-                updateTaskStatus(taskId, "completed");
+
+                if (statusElement.innerText != "completed") {
+                    updateTaskStatus(taskId, "completed");
+                    statusElement.innerText = "completed";
+                }
 
             });
             middle.addEventListener("dragover", function (e) {
@@ -144,8 +166,10 @@ actionName: "New", controllerName: "Articles",
             middle.addEventListener("drop", function (e) {
                 middle.appendChild(selected);
                 selected = null;
-                updateTaskStatus(taskId, "working");
-
+                if (statusElement.innerText != "working") {
+                    updateTaskStatus(taskId, "working");
+                    statusElement.innerText = "working";
+                }
 
             });
         })
@@ -175,6 +199,8 @@ actionName: "New", controllerName: "Articles",
     }
     
 </script>
+
+@* Add new task  *@
 
 <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -213,6 +239,14 @@ actionName: "New", controllerName: "Articles",
     </div>
 </div>
 
+
+<br />
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<br />
+<br />
+<br />
+<br />
+
