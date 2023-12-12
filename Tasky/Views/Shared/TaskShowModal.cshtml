@@ -37,8 +37,9 @@
                     </div>
 
             </div>
+            @* comments *@
             <div class="modal-footer">
-                <div class="container">
+                  <div class="container">
                     <!--Comment creation form-->
                     <h5>Add a comment</h5>
                     <form method="post" action="/Projects/AddComment/@Model.ProjectId">
@@ -59,8 +60,9 @@
                 {
                     @if (userId==comm.UserId)
                         {
-                            <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label
+                            <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label>
                             <form method="post" action="/Projects/AddComment/@Model.ProjectId">
+                                <input type="hidden" name="Id" value="@comm.Id"/>
                                 <input type="hidden" name="TaskId" value="@Model.Id" />
                                 <div class="form-group">
                                     <input type="text" class="form-control" name="Content" value="@comm.Content"/>
