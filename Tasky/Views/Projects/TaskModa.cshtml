@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for adding a new task -->
-                <form method="post" action="/Projects/Show/@Model.ProjectId">
+                <form method="post" action="/Projects/AddTask/@Model.ProjectId">
                     <input type="hidden" name="ProjectId" value="@Model.ProjectId" />
                     <input type="hidden" name="Status" value="@Model.Status" />
                     <input type="hidden" name="Id" value="@Model.Id" />

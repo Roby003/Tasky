@@ -16,6 +16,7 @@ namespace Tasky.Data
         public DbSet<Models.Task>? Tasks { get; set; }
         public DbSet<ApplicationUser>? ApplicationUsers { get; set; }
         public DbSet<ApplicationUserProject>? ApplicationUserProjects { get; set; }
+        public DbSet<Comment>? Comments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

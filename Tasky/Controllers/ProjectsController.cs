@@ -51,7 +51,7 @@ namespace Tasky.Controllers
 
 		public IActionResult Show(int id)
 		{
-            Project project = db.Projects.Include("ApplicationUsers").Include("Tasks").Where(m => m.Id == id).First();
+            Project project = db.Projects.Include("ApplicationUsers").Include("Tasks.Comments.User").Where(m => m.Id == id).First();
 
 
 			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
@@ -64,7 +64,7 @@ namespace Tasky.Controllers
         }
 		/*Show folosit pentru a adauga sau a edita taskuri*/
 		[HttpPost]
-		public IActionResult Show([FromForm] Models.Task task)
+		public IActionResult AddTask([FromForm] Models.Task task)
 		{
 
 			Project project = db.Projects.Find(task.ProjectId);
@@ -93,11 +93,38 @@ namespace Tasky.Controllers
 					TempData["message"] = "you can't create a category if you are not an organizer";
 					TempData["messageClass"]="alert-danger";
 
-					return View(project);
+					return View("Show",project);
 				}
 			}
 			else
-			{ return View(project); }
+			{ return View("Show",project); }
+		}
+		[HttpPost]
+		public IActionResult AddComment([FromForm] Comment comment)
+		{
+			Models.Task task=db.Tasks.Find(comment.TaskId);
+			Project project = db.Projects.Find(task.ProjectId);
+			
+			comment.Date= DateTime.Now;
+			comment.UserId= _userManager.GetUserId(User);
+			if (ModelState.IsValid)
+			{
+				Comment c=db.Comments.Find(comment.Id);
+				if (c != null)
+				{
+					c.Content = comment.Content;
+
+				}
+				else
+				{
+					db.Comments.Add(comment);
+				}
+				db.SaveChanges();
+				return Redirect("/Projects/Show/" + project.Id);
+			
+			}
+			else
+			{ return View("Show", project); }
 		}
 		public IActionResult Index()
 		{

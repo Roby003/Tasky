@@ -1,0 +1,82 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using System.Security.Claims
+@{
+    // Get the user's ID from the ClaimsPrincipal
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
+<div class="modal fade" id="taskShowModal_@Model.Id" tabindex="-1" role="dialog" aria-labelledby="taskShowModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTaskModalLabel">@Model.Descriere</h5>
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Show task contents -->
+                    
+                    <div class="container">
+                        <label for="taskStartDate">Start Date:</label>
+                        <br/>
+                        <p>@Model.DataStart</p>
+                    </div>
+                    <div class="container">
+                    <label for="taskEndDate">Deadline:</label>
+                    <br/>
+                        <p>@Model.DataFinalizare</p>
+                    </div>
+                    <div class="container">
+                        <label for="taskMedia">Media:</label>
+                         <object data="@Model.Media" width="400" height="300">
+                              <!-- Provide alternative content here -->
+                              <p>Your browser does not support embedded content.</p>
+                         </object>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <!--Comment creation form-->
+                    <h5>Add a comment</h5>
+                    <form method="post" action="/Projects/AddComment/@Model.ProjectId">
+                        <input type="hidden" name="TaskId" value="@Model.Id" />
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="Content"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="container" style="overflow-y:auto; overflow-wrap:anywhere;">
+                <h5><b>Activity</b></h5>
+                </div>
+                <div class="container">
+                    @*list all comms*@
+
+
+                @foreach(Comment comm in Model.Comments)
+                {
+                    @if (userId==comm.UserId)
+                        {
+                            <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label
+                            <form method="post" action="/Projects/AddComment/@Model.ProjectId">
+                                <input type="hidden" name="TaskId" value="@Model.Id" />
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="Content" value="@comm.Content"/>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                        <div class="container my-2 mx-2">
+                   ` <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label>
+                        <p>@comm.Content</p>
+                        </div>
+                        }
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

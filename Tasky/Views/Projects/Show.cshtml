@@ -28,6 +28,10 @@
         margin: 10px;
         min-height: 100px;
     }
+    .card:hover
+    {
+        cursor:pointer;
+    }
 </style>
 
 
@@ -35,12 +39,14 @@
     <div class="row">
         <div class="col-md-4">
             <div id="left" class="column bg-light">
+                <div id="innerCards">
+
                 <h2>Not Started</h2>
                 @foreach (var task in Model.Tasks)
                 {
                     if (task.Status == "notstarted")
                     {
-                        <div class="card mb-3" draggable="true" data-task-id="@task.Id">
+                            <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -51,7 +57,11 @@
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                     Edit Task
                                 </button>
+                                <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                        Show Task
+                                </button>
                                 @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task)
                             </div>
                         </div>
 
@@ -60,6 +70,7 @@
                     }
                 }
                 <br />
+                </div>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
 
             </div>
@@ -71,7 +82,7 @@
                 {
                     if (task.Status == "working")
                     {
-                        <div class="card mb-3" draggable="true"  data-task-id="@task.Id">
+                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -82,7 +93,11 @@
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                     Edit Task
                                 </button>
+                                <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                    Show Task
+                                </button>
                                 @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task)
                             </div>
                         </div>
                     }
@@ -97,7 +112,7 @@
                 {
                     if (task.Status == "completed")
                     {
-                        <div class="card mb-3" draggable="true" data-task-id="@task.Id">
+                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -105,10 +120,14 @@
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
                                 @* edit task *@
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                <button type="button"  class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                     Edit Task
                                 </button>
+                                <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                    Show Task
+                                </button>
                                 @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task)
                             </div>
                         </div>
                     }
@@ -124,6 +143,15 @@
     <input type="hidden" name="newStatus" id="newStatus" />
 </form>
 <script>
+    function showTaskModal(taskId) {
+       /* console.log("btn is working")
+       let btn= document.querySelector(`#showButton_${taskId}`)
+       btn.click() 
+       // Trigger the click event on the "Show Task" button
+        //$(`#taskShowModal_${taskId} .btn[data-target="#taskShowModal_${taskId}"]`).click();
+        event.preventDefault();*/
+        $('#taskShowModal_' + taskId).modal('show');
+    }
     let list = document.getElementsByClassName("card mb-3");
     let left = document.getElementById("left");
     let right = document.getElementById("right");
@@ -139,7 +167,9 @@
                 e.preventDefault();
             });
             left.addEventListener("drop", function (e) {
-                left.appendChild(selected);
+               //left.appendChild(selected);
+               let innerCards=left.querySelector("#innerCards")
+               innerCards.appendChild(selected)
                 selected = null;
                 if (statusElement.innerText != "notstarted") {
                     updateTaskStatus(taskId, "notstarted");
@@ -202,6 +232,7 @@
 
 @* Add new task  *@
 
+
 <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -213,7 +244,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for adding a new task -->
-                <form method ="post" action="/Projects/Show/@Model.Id">
+                <form method ="post" action="/Projects/AddTask/@Model.Id">
                     <input type="hidden" name="ProjectId" value="@Model.Id" />
                     <input type="hidden" name="Status" value="notstarted" />
                     <div class="form-group">
@@ -238,6 +269,7 @@
         </div>
     </div>
 </div>
+
 
 
 <br />
