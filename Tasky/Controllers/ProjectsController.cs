@@ -55,8 +55,15 @@ namespace Tasky.Controllers
 
 
 			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
-			{
-				return View(project);
+            {
+                if (TempData.ContainsKey("message"))
+                {
+                    ViewBag.Message = TempData["message"];
+                    ViewBag.Alert = TempData["messageClass"];
+                }
+
+
+                return View(project);
 			}
 
 			return RedirectToAction("Index");
@@ -85,20 +92,24 @@ namespace Tasky.Controllers
                         db.Tasks.Add(task);
                     }
                     db.SaveChanges();
+                    TempData["message"] = "task created successfully";
+                    TempData["messageClass"] = "alert-success";
 
                     return Redirect("/Projects/Show/" + project.Id);
                 }
 				else
 				{
-					TempData["message"] = "you can't create a category if you are not an organizer";
+					TempData["message"] = "you can't create a task if you are not an organizer";
 					TempData["messageClass"]="alert-danger";
 
-					return View("Show",project);
-				}
-			}
+                    return Redirect("/Projects/Show/" + project.Id);
+                }
+            }
 			else
-			{ return View("Show",project); }
-		}
+            {
+                return Redirect("/Projects/Show/" + project.Id);
+            }
+        }
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)
 		{
@@ -113,19 +124,51 @@ namespace Tasky.Controllers
 				if (c != null)
 				{
 					c.Content = comment.Content;
+                    TempData["message"] = "comment modified successfully";
 
-				}
-				else
+                }
+                else
 				{
 					db.Comments.Add(comment);
-				}
-				db.SaveChanges();
-				return Redirect("/Projects/Show/" + project.Id);
+                    TempData["message"] = "comment created successfully";
+
+                }
+                db.SaveChanges();
+                TempData["messageClass"] = "alert-success";
+                return Redirect("/Projects/Show/" + project.Id);
 			
 			}
 			else
-			{ return View("Show", project); }
-		}
+			{
+                TempData["message"] = "comment not created";
+                TempData["messageClass"] = "alert-danger";
+                return Redirect("/Projects/Show/" + project.Id);
+            }
+        }
+		[HttpPost]
+		public IActionResult DeleteComment(int id)
+		{
+			Comment comm = db.Comments.Find(id);
+            Models.Task task = db.Tasks.Find(comm.TaskId);
+            Project project = db.Projects.Find(task.ProjectId);
+            if (comm == null)
+				return Redirect("/Projects/Index");
+			if( comm.UserId==_userManager.GetUserId(User) || User.IsInRole("Admin"))
+			{ 
+				
+				db.Remove(comm);
+				db.SaveChanges();
+				TempData["message"] = "Comment removed";
+				TempData["messageClass"] = "alert-success";
+                return Redirect("/Projects/Show/" + project.Id);
+            }
+            else
+			{
+                TempData["message"] = "Comment removed";
+                TempData["messageClass"] = "alert-success";
+                return Redirect("/Projects/Show/" + project.Id);
+            }
+        }
 		public IActionResult Index()
 		{
 			ApplicationUser user = db.ApplicationUsers.Include("Projects.Project").Where(m => m.Id.Equals(_userManager.GetUserId(User))).First();

@@ -15,6 +15,12 @@
 
 </div>
  *@
+@if (TempData["message"] != null)
+{
+    <div class="alert @ViewBag.Alert p-3 rounded-3 text-center mb-5">
+        @ViewBag.Message
+    </div>
+}
 
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -140,9 +146,10 @@
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id" onclick="editTaskModal(event, @task.Id)">
                                         Edit Task
                                     </button>
+
                                     <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
                                         Show Task
                                     </button>
@@ -171,6 +178,9 @@
     <input type="hidden" name="newStatus" id="newStatus" />
 </form>
 <script>
+    var button = document.getElementsByClassName("btn btn-primary");
+
+
     function showTaskModal(taskId) {
        /* console.log("btn is working")
        let btn= document.querySelector(`#showButton_${taskId}`)
@@ -278,14 +288,19 @@
                     <div class="form-group">
                         <label for="taskDescription">Description:</label>
                         <input type="text" class="form-control" name="Descriere" placeholder="Enter description" />
+                        @Html.ValidationMessage("Descriere",null,new{@class="text-danger"})
                     </div>
                     <div class="form-group">
                         <label for="taskStartDate">Start Date:</label>
                         <input type="date" class="form-control" name="DataStart" />
+                        @Html.ValidationMessage("DataStart",null,new{@class="text-danger"})
+
                     </div>
                     <div class="form-group">
                         <label for="taskEndDate">Deadline:</label>
                         <input type="date" class="form-control" name="DataFinalizare" />
+                        @Html.ValidationMessage("DataFinalizare",null,new{@class="text-danger"})
+
                     </div>
                     <div class="form-group">
                         <label for="taskMedia">Media:</label>

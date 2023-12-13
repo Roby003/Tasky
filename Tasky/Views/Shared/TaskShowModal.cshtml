@@ -68,6 +68,11 @@
                                     <input type="text" class="form-control" name="Content" value="@comm.Content"/>
                                 </div>
                             </form>
+                            <form method="post" action="/Projects/DeleteComment/@comm.Id">
+
+                                <button class="btn btn-danger" type="submit">Remove comment</button>
+
+                            </form>
                         }
                         else
                         {
@@ -87,6 +92,5 @@
     function closeModal(modalId)
     {
         $('#taskShowModal_' + modalId).modal('hide');
-
     }
 </script>
