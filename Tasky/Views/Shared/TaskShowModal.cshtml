@@ -68,9 +68,10 @@
                                     <input type="text" class="form-control" name="Content" value="@comm.Content"/>
                                 </div>
                             </form>
-                            <form method="post" action="/Projects/DeleteComment/@comm.Id">
+                            @* delete comm *@
+                            <form method="post" action="/Projects/DeleteComment/@comm.Id" class="d-flex justify-content-end align-items-center">
 
-                                <button class="btn btn-danger" type="submit">Remove comment</button>
+                                <button class="btn btn-sm btn-danger" type="submit"><small>Remove comment</small></button>
 
                             </form>
                         }

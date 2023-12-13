@@ -34,10 +34,6 @@
         margin: 10px;
         min-height: 100px;
     }
-    .card:hover
-    {
-        cursor:pointer;
-    }
 </style>
 
 
@@ -52,7 +48,7 @@
                 {
                     if (task.Status == "notstarted")
                     {
-                            <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
+                            <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -64,7 +60,7 @@
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                             Edit Task
                                         </button>
-                                        <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                        <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
                                             Show Task
                                         </button>
                                         <div class="d-flex align-items-center">
@@ -97,7 +93,7 @@
                 {
                     if (task.Status == "working")
                     {
-                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
+                        <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -109,7 +105,7 @@
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                         Edit Task
                                     </button>
-                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
                                         Show Task
                                     </button>
                                     <div class="d-flex align-items-center">
@@ -137,7 +133,7 @@
                 {
                     if (task.Status == "completed")
                     {
-                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" onclick="showTaskModal(@task.Id)">
+                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" >
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
@@ -146,11 +142,11 @@
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id" onclick="editTaskModal(event, @task.Id)">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
                                         Edit Task
                                     </button>
 
-                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id" style="display: none;">
+                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
                                         Show Task
                                     </button>
                                     <div class="d-flex align-items-center">
@@ -178,16 +174,9 @@
     <input type="hidden" name="newStatus" id="newStatus" />
 </form>
 <script>
-    var button = document.getElementsByClassName("btn btn-primary");
-
 
     function showTaskModal(taskId) {
-       /* console.log("btn is working")
-       let btn= document.querySelector(`#showButton_${taskId}`)
-       btn.click() 
-       // Trigger the click event on the "Show Task" button
-        //$(`#taskShowModal_${taskId} .btn[data-target="#taskShowModal_${taskId}"]`).click();
-        event.preventDefault();*/
+     
         $('#taskShowModal_' + taskId).modal('show');
     }
     let list = document.getElementsByClassName("card mb-3");
@@ -267,6 +256,7 @@
     }
     
 </script>
+
 
 @* Add new task  *@
 
