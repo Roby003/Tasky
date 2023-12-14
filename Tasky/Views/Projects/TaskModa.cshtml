@@ -20,14 +20,19 @@
                     <div class="form-group">
                         <label for="taskDescription">Description:</label>
                         <input type="text" class="form-control" name="Descriere" placeholder="@Model.Descriere" />
+                        @Html.ValidationMessage("Descriere",null,new{@class="text-danger"})
                     </div>
                     <div class="form-group">
                         <label for="taskStartDate">Start Date:</label>
                         <input type="date" class="form-control" name="DataStart" id="tsd_@Model.Id" value="@Model.DataStart.ToString("yyyy-MM-dd")" />
+                        @Html.ValidationMessage("DataStart",null,new{@class="text-danger"})
+
                     </div>
                     <div class="form-group">
                         <label for="taskEndDate">Deadline:</label>
                         <input type="date" class="form-control" name="DataFinalizare" id="tsf_@Model.Id" value="@Model.DataFinalizare.ToString("yyyy-MM-dd")" />
+                        @Html.ValidationMessage("DataFinalizare",null,new{@class="text-danger"})
+
                     </div>
                     <div class="form-group">
                         <label for="taskMedia">Media:</label>
