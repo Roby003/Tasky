@@ -53,8 +53,8 @@
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
                                 <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
-                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
-                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
+                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                     <div class="container d-flex justify-content-between ps-0">
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
@@ -98,8 +98,8 @@
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
                                 <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
-                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
-                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
+                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
@@ -138,8 +138,8 @@
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
                                 <p class="card-text"><strong>Status:</strong><span id="status"> @task.Status</span></p>
-                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart.ToShortDateString()</p>
-                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare.ToShortDateString()</p>
+                                <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
+                                <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
@@ -272,6 +272,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for adding a new task -->
+                @Html.ValidationSummary()
                 <form method ="post" action="/Projects/AddTask/@Model.Id">
                     <input type="hidden" name="ProjectId" value="@Model.Id" />
                     <input type="hidden" name="Status" value="notstarted" />
@@ -307,7 +308,6 @@
 
 <br />
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <br />

@@ -61,7 +61,8 @@ namespace Tasky.Controllers
                     ViewBag.Message = TempData["message"];
                     ViewBag.Alert = TempData["messageClass"];
                 }
-
+				if (TempData.ContainsKey("modalName"))
+					ViewBag.modalName = TempData["modalName"];
 
                 return View(project);
 			}
@@ -106,9 +107,9 @@ namespace Tasky.Controllers
                 }
             }
 			else
-            {
-                return Redirect("/Projects/Show/" + project.Id);
-            }
+			{
+				return Redirect("/Projects/Show/" + project.Id); 
+			}
         }
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)

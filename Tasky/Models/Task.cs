@@ -12,8 +12,10 @@ namespace Tasky.Models
         public string? Descriere { get; set; }
         public string? Status { get; set; }
         [Required(ErrorMessage ="The task must have a start date")]
-        public DateTime DataStart { get; set; }
-        public DateTime DataFinalizare { get; set; }
+        public DateTime? DataStart { get; set; }
+        [Required(ErrorMessage = "The task must have an end date")]
+
+        public DateTime? DataFinalizare { get; set; }
         public string? Media { get; set; }
         public int? ProjectId { get; set; }
         public virtual Project? Project { get; set; }
