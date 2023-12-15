@@ -36,7 +36,7 @@
     }
 </style>
 
-
+<div id="modal-placeholder"></div>
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-4">
@@ -57,7 +57,7 @@
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                     <div class="container d-flex justify-content-between ps-0">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                        <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">  
                                             Edit Task
                                         </button>
                                         <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
@@ -71,8 +71,8 @@
                                             <div class="ml-1">@task.Comments.Count</div>
                                         </div>
                                     </div>
-                                @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task)
+                                 @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task) 
                             </div>
                         </div>
 
@@ -82,7 +82,7 @@
                 }
                 <br />
                 </div>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
+                <button class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{id=Model.Id})">Add Task</button>
 
             </div>
         </div>
@@ -102,7 +102,7 @@
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">
                                         Edit Task
                                     </button>
                                     <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
@@ -117,8 +117,8 @@
                                     </div>
                                 </div>
 
-                                @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task)
+                              @*   @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task) *@
                             </div>
                         </div>
                     }
@@ -142,7 +142,7 @@
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal_@task.Id">
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">
                                         Edit Task
                                     </button>
 
@@ -157,8 +157,9 @@
                                         <div class="ml-1">@task.Comments.Count</div>
                                     </div>
                                 </div>
-                                @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task)
+                                <div id="modal-placeholder"></div>
+                             @*    @Html.Partial("TaskModa", task)
+                                @Html.Partial("TaskShowModal",task) *@
                             </div>
                         </div>
                     }
@@ -256,54 +257,6 @@
     }
     
 </script>
-
-
-@* Add new task  *@
-
-
-<div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Form for adding a new task -->
-                @Html.ValidationSummary()
-                <form method ="post" action="/Projects/AddTask/@Model.Id">
-                    <input type="hidden" name="ProjectId" value="@Model.Id" />
-                    <input type="hidden" name="Status" value="notstarted" />
-                    <div class="form-group">
-                        <label for="taskDescription">Description:</label>
-                        <input type="text" class="form-control" name="Descriere" placeholder="Enter description" />
-                        @Html.ValidationMessage("Descriere",null,new{@class="text-danger"})
-                    </div>
-                    <div class="form-group">
-                        <label for="taskStartDate">Start Date:</label>
-                        <input type="date" class="form-control" name="DataStart" />
-                        @Html.ValidationMessage("DataStart",null,new{@class="text-danger"})
-
-                    </div>
-                    <div class="form-group">
-                        <label for="taskEndDate">Deadline:</label>
-                        <input type="date" class="form-control" name="DataFinalizare" />
-                        @Html.ValidationMessage("DataFinalizare",null,new{@class="text-danger"})
-
-                    </div>
-                    <div class="form-group">
-                        <label for="taskMedia">Media:</label>
-                        <input type="text" class="form-control" name="Media" placeholder="Enter media URL" />
-                    </div>
-                    <button type="submit" class="btn btn-success">Add Task</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 
 <br />

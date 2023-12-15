@@ -1,8 +1,14 @@
-﻿
+﻿@model Tasky.Models.Task
 @*
+    
     PartialView pentru afisarea modalului de edit
 *@
-<div class="modal fade" id="taskModal_@Model.Id" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
+<script>
+    $('.close').on('click', function () {
+        $('#taskModal').modal('hide');
+    });
+</script>
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,10 +19,12 @@
             </div>
             <div class="modal-body">
                 <!-- Form for adding a new task -->
-                <form method="post" action="/Projects/AddTask/@Model.ProjectId">
+                <form asp-action="AddTask">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input type="hidden" name="ProjectId" value="@Model.ProjectId" />
-                    <input type="hidden" name="Status" value="@Model.Status" />
                     <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" name="Status" value="notstarted" />
+
                     <div class="form-group">
                         <label for="taskDescription">Description:</label>
                         <input type="text" class="form-control" name="Descriere" placeholder="@Model.Descriere" />
@@ -24,13 +32,13 @@
                     </div>
                     <div class="form-group">
                         <label for="taskStartDate">Start Date:</label>
-                        <input type="date" class="form-control" name="DataStart" id="tsd_@Model.Id" value="@Model.DataStart.ToString("yyyy-MM-dd")" />
+                        <input type="date" class="form-control" name="DataStart" id="tsd_@Model.Id" value="@Model.DataStart?.ToString("yyyy-MM-dd")" />
                         @Html.ValidationMessage("DataStart",null,new{@class="text-danger"})
 
                     </div>
                     <div class="form-group">
                         <label for="taskEndDate">Deadline:</label>
-                        <input type="date" class="form-control" name="DataFinalizare" id="tsf_@Model.Id" value="@Model.DataFinalizare.ToString("yyyy-MM-dd")" />
+                        <input type="date" class="form-control" name="DataFinalizare" id="tsf_@Model.Id" value="@Model.DataFinalizare?.ToString("yyyy-MM-dd")" />
                         @Html.ValidationMessage("DataFinalizare",null,new{@class="text-danger"})
 
                     </div>
@@ -38,9 +46,11 @@
                         <label for="taskMedia">Media:</label>
                         <input type="text" class="form-control" name="Media" placeholder="@Model.Media" />
                     </div>
-                    <button type="submit" class="btn btn-success">Update Task</button>
-
                 </form>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-success" data-save="modal">Save</button>
+                </div>
             </div>
         </div>
     </div>

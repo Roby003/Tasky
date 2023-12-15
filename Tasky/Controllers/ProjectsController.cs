@@ -80,37 +80,52 @@ namespace Tasky.Controllers
 			{
 				if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
 				{
-                    Models.Task t = db.Tasks.Find(task.Id);
-                    if (t != null)
+					Models.Task t = db.Tasks.Find(task.Id);
+					if (t != null)
 					{
 						t.Descriere = task.Descriere;
 						t.DataFinalizare = task.DataFinalizare;
-						t.DataStart= task.DataStart;
+						t.DataStart = task.DataStart;
 						t.Media = task.Media;
-                    }
+					}
 					else
 					{
-                        db.Tasks.Add(task);
-                    }
-                    db.SaveChanges();
-                    TempData["message"] = "task created successfully";
-                    TempData["messageClass"] = "alert-success";
+						db.Tasks.Add(task);
+					}
+					db.SaveChanges();
+					TempData["message"] = "task created successfully";
+					TempData["messageClass"] = "alert-success";
 
-                    return Redirect("/Projects/Show/" + project.Id);
+                    return PartialView("TaskModa", task);
                 }
-				else
+                else
 				{
 					TempData["message"] = "you can't create a task if you are not an organizer";
-					TempData["messageClass"]="alert-danger";
+					TempData["messageClass"] = "alert-danger";
 
-                    return Redirect("/Projects/Show/" + project.Id);
-                }
-            }
+					return Redirect("/Projects/Show/" + project.Id);
+				}
+			}
 			else
 			{
-				return Redirect("/Projects/Show/" + project.Id); 
+				return PartialView("TaskModa", task);
 			}
-        }
+		}
+		public IActionResult AddTask(int? projectId=null,int? taskId=null)
+		{
+			//same method for edit and create
+			var model = new Models.Task();
+			if (taskId == null)
+			{
+
+				model.ProjectId = projectId;
+			}
+			else
+
+			{ model = db.Tasks.Find(taskId); }
+
+			return PartialView("TaskModa", model);
+		}
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)
 		{
