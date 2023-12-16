@@ -12,13 +12,22 @@
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
         event.preventDefault();
         //post form data
-        var form = $(this).parents('.modal').find('form');
+  /*      console.log(event)
+        console.log(event.target.id)*/
+        // Get the ID of the clicked button
+        var buttonId = event.target.id;
+        //use the button id to select the correct form
+        var formClass = '.modal-body form#' + buttonId;
+        var form = $(formClass);
+
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
-
+        console.log(dataToSend)
         $.post(actionUrl, dataToSend).done(function (data) {
-            var newBody = $('.modal-body', data);
-            placeholderElement.find('.modal-body').replaceWith(newBody);
+            var newForm = $(data).find(formClass);
+
+            // Replace the content of the existing form
+            form.replaceWith(newForm);
             // find IsValid input field and check it's value
             // if it's valid then hide modal window
             var isValid = newBody.find('[name="IsValid"]').val() == 'True';
@@ -29,7 +38,5 @@
         });
 
     });
-    $('.close').on('click', function () {
-        console.log('Close button clicked');
-    });
+  
 });

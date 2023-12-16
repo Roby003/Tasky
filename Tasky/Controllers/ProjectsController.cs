@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using Tasky.Data;
 using Tasky.Models;
 
@@ -129,8 +130,8 @@ namespace Tasky.Controllers
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)
 		{
-			Models.Task task=db.Tasks.Find(comment.TaskId);
-			Project project = db.Projects.Find(task.ProjectId);
+            var task = db.Tasks.Include("Comments").Where(m => m.Id == comment.TaskId).First();
+            Project project = db.Projects.Find(task.ProjectId);
 			
 			comment.Date= DateTime.Now;
 			comment.UserId= _userManager.GetUserId(User);
@@ -151,16 +152,21 @@ namespace Tasky.Controllers
                 }
                 db.SaveChanges();
                 TempData["messageClass"] = "alert-success";
-                return Redirect("/Projects/Show/" + project.Id);
+                return PartialView("TaskShowModal",task);
 			
 			}
 			else
 			{
-                TempData["message"] = "comment not created";
-                TempData["messageClass"] = "alert-danger";
-                return Redirect("/Projects/Show/" + project.Id);
+                
+                return PartialView("TaskShowModal" , task);
             }
         }
+		
+		public IActionResult ShowTask(int TaskId)
+		{
+			var task = db.Tasks.Include("Comments").Where(m=> m.Id==TaskId).First();
+			return PartialView("TaskShowModal", task);
+		}
 		[HttpPost]
 		public IActionResult DeleteComment(int id)
 		{

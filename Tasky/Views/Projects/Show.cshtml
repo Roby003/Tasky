@@ -36,7 +36,7 @@
     }
 </style>
 
-<div id="modal-placeholder"></div>
+<div id="modal-placeholder"></div> @* where the modal will anchor once it is loaded *@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-4">
@@ -60,7 +60,7 @@
                                         <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">  
                                             Edit Task
                                         </button>
-                                        <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
+                                        <button type="button"  class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskShowModal" data-url="@Url.Action("ShowTask",new{taskId=@task.Id})">
                                             Show Task
                                         </button>
                                         <div class="d-flex align-items-center">
@@ -71,8 +71,6 @@
                                             <div class="ml-1">@task.Comments.Count</div>
                                         </div>
                                     </div>
-                                 @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task) 
                             </div>
                         </div>
 
@@ -105,7 +103,7 @@
                                     <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">
                                         Edit Task
                                     </button>
-                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskShowModal" data-url="@Url.Action("ShowTask",new{taskId=@task.Id})">
                                         Show Task
                                     </button>
                                     <div class="d-flex align-items-center">
@@ -117,8 +115,7 @@
                                     </div>
                                 </div>
 
-                              @*   @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task) *@
+                        
                             </div>
                         </div>
                     }
@@ -131,13 +128,13 @@
                 <h2>Completed</h2>
                 @foreach (var task in Model.Tasks)
                 {
-                    if (task.Status == "completed")
+                    if(task.Status == "completed")
                     {
-                        <div class="card mb-3" draggable="true" data-task-id="@task.Id" >
+                        <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
                                 <p class="card-text"><strong>Media:</strong> @task.Media</p>
-                                <p class="card-text"><strong>Status:</strong><span id="status"> @task.Status</span></p>
+                                <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
                                 @* edit task *@
@@ -145,8 +142,7 @@
                                     <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">
                                         Edit Task
                                     </button>
-
-                                    <button type="button" id="showButton_@task.Id" class="btn btn-primary" data-toggle="modal" data-target="#taskShowModal_@task.Id">
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskShowModal" data-url="@Url.Action("ShowTask",new{taskId=@task.Id})">
                                         Show Task
                                     </button>
                                     <div class="d-flex align-items-center">
@@ -157,9 +153,8 @@
                                         <div class="ml-1">@task.Comments.Count</div>
                                     </div>
                                 </div>
-                                <div id="modal-placeholder"></div>
-                             @*    @Html.Partial("TaskModa", task)
-                                @Html.Partial("TaskShowModal",task) *@
+
+
                             </div>
                         </div>
                     }
@@ -169,7 +164,6 @@
         </div>
     </div>
 </div>
-
 <form method="post" asp-controller="Tasks" asp-action="UpdateStatus" id="updateStatusForm">
     <input type="hidden" name="taskId" id="taskId" />
     <input type="hidden" name="newStatus" id="newStatus" />

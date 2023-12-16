@@ -6,12 +6,24 @@
     // Get the user's ID from the ClaimsPrincipal
     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 }
-<div class="modal fade" id="taskShowModal_@Model.Id" tabindex="-1" role="dialog" aria-labelledby="taskShowModalLabel" aria-hidden="true">
+@model Tasky.Models.Task
+@if (TempData["message"] != null)
+{
+    <div class="alert @ViewBag.Alert p-3 rounded-3 text-center mb-5">
+        @ViewBag.Message
+    </div>
+}
+<script>
+    function closeModal() {
+        $('#taskShowModal').modal('hide');
+    }
+</script>
+<div class="modal fade" id="taskShowModal" tabindex="-1" role="dialog" aria-labelledby="taskShowModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addTaskModalLabel">@Model.Descriere</h5>
-                <button type="button" class="close" aria-label="Close" data-dismiss="modal" onclick="closeModal(@Model.Id)">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal" onclick="closeModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -36,18 +48,21 @@
                          </object>
                     </div>
 
-            </div>
-            @* comments *@
-            <div class="modal-footer">
+            @* </div
+            <div class="modal-footer"> *@
+                @* comments *@
                   <div class="container">
                     <!--Comment creation form-->
                     <h5>Add a comment</h5>
-                    <form method="post" action="/Projects/AddComment/@Model.ProjectId">
+                    <form asp-action="AddComment" id="form_add">
                         <input type="hidden" name="TaskId" value="@Model.Id" />
                         <div class="form-group">
-                            <input type="text" class="form-control" name="Content"/>
+                            <input type="text" class="form-control" name="Content" />
+                            @Html.ValidationMessage("Content",null,new {@class="text-danger"})
                         </div>
                     </form>
+                    <button type="button" data-save="modal" id="form_add" class="btn btn-success">Save</button>
+                  
                 </div>
                 <div class="container" style="overflow-y:auto; overflow-wrap:anywhere;">
                 <h5><b>Activity</b></h5>
@@ -60,14 +75,15 @@
                 {
                     @if (userId==comm.UserId)
                         {
-                            <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label>
-                            <form method="post" action="/Projects/AddComment/@Model.ProjectId">
-                                <input type="hidden" name="Id" value="@comm.Id"/>
+                            <form asp-action="AddComment" id="form_@comm.Id">
                                 <input type="hidden" name="TaskId" value="@Model.Id" />
+                                <input type="hidden" name="Id" value="@comm.Id"/>
                                 <div class="form-group">
                                     <input type="text" class="form-control" name="Content" value="@comm.Content"/>
+                                    @Html.ValidationMessage("Content",null,new {@class="text-danger"})
                                 </div>
-                            </form>
+                              </form>
+                                <button type="button" data-save="modal" id="form_@comm.Id" class="btn btn-success">Save</button>
                             @* delete comm *@
                             <form method="post" action="/Projects/DeleteComment/@comm.Id" class="d-flex justify-content-end align-items-center">
 
@@ -89,9 +105,3 @@
     </div>
 </div>
 
-<script>
-    function closeModal(modalId)
-    {
-        $('#taskShowModal_' + modalId).modal('hide');
-    }
-</script>
