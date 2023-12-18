@@ -16,6 +16,8 @@
 <script>
     function closeModal() {
         $('#taskShowModal').modal('hide');
+        location.reload();
+
     }
 </script>
 <div class="modal fade" id="taskShowModal" tabindex="-1" role="dialog" aria-labelledby="taskShowModalLabel" aria-hidden="true">
@@ -48,13 +50,13 @@
                          </object>
                     </div>
 
-            @* </div
-            <div class="modal-footer"> *@
+            
                 @* comments *@
                   <div class="container">
                     <!--Comment creation form-->
                     <h5>Add a comment</h5>
                     <form asp-action="AddComment" id="form_add">
+                        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                         <input type="hidden" name="TaskId" value="@Model.Id" />
                         <div class="form-group">
                             <input type="text" class="form-control" name="Content" />
@@ -62,11 +64,15 @@
                         </div>
                     </form>
                     <button type="button" data-save="modal" id="form_add" class="btn btn-success">Save</button>
+                    <div id="commentMessage" class="text-success"></div> <!-- Add this line for the message container -->
                   
                 </div>
+            </div>
+            <div class="modal-footer">
                 <div class="container" style="overflow-y:auto; overflow-wrap:anywhere;">
                 <h5><b>Activity</b></h5>
                 </div>
+
                 <div class="container">
                     @*list all comms*@
 
@@ -76,6 +82,8 @@
                     @if (userId==comm.UserId)
                         {
                             <form asp-action="AddComment" id="form_@comm.Id">
+                                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+
                                 <input type="hidden" name="TaskId" value="@Model.Id" />
                                 <input type="hidden" name="Id" value="@comm.Id"/>
                                 <div class="form-group">
