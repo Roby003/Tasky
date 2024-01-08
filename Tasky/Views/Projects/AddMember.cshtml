@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Add Member</h2>
+
+<form asp-action="AddMember" method="post">
+    <div class="form-group">
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+        <input type="hidden" id="project_id" name="project_id" class="form-control" value="@ViewBag.project" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Member</button>
+</form>
