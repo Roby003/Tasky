@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Tasky.Data;
@@ -57,13 +59,14 @@ namespace Tasky.Controllers
 
 			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
             {
+				//aici e bugul
                 if (TempData.ContainsKey("message"))
                 {
                     ViewBag.Message = TempData["message"];
                     ViewBag.Alert = TempData["messageClass"];
                 }
-				if (TempData.ContainsKey("modalName"))
-					ViewBag.modalName = TempData["modalName"];
+				/*if (TempData.ContainsKey("modalName"))
+					ViewBag.modalName = TempData["modalName"];*/
 
                 return View(project);
 			}
@@ -84,6 +87,7 @@ namespace Tasky.Controllers
 					Models.Task t = db.Tasks.Find(task.Id);
 					if (t != null)
 					{
+						t.UserId = task.UserId;
 						t.Descriere = task.Descriere;
 						t.DataFinalizare = task.DataFinalizare;
 						t.DataStart = task.DataStart;
@@ -94,22 +98,23 @@ namespace Tasky.Controllers
 						db.Tasks.Add(task);
 					}
 					db.SaveChanges();
-					TempData["message"] = "task created successfully";
+					TempData["message"] = "task updated successfully";
 					TempData["messageClass"] = "alert-success";
-
+                    task.Users = GetAllUsers(task.ProjectId);
                     return PartialView("TaskModa", task);
                 }
                 else
 				{
-					TempData["message"] = "you can't create a task if you are not an organizer";
+					TempData["message"] = "you can't handle a task if you are not an organizer";
 					TempData["messageClass"] = "alert-danger";
 
-					return Redirect("/Projects/Show/" + project.Id);
-				}
+                    return Redirect("/Projects/Show/" + project.Id);
+                }
 			}
 			else
 			{
-				return PartialView("TaskModa", task);
+				task.Users = GetAllUsers(task.ProjectId);
+                return PartialView("TaskModa", task);
 			}
 		}
 		public IActionResult AddTask(int? projectId=null,int? taskId=null)
@@ -125,7 +130,10 @@ namespace Tasky.Controllers
 
 			{ model = db.Tasks.Find(taskId); }
 
-			return PartialView("TaskModa", model);
+			model.Users = GetAllUsers(model.ProjectId);
+
+
+            return PartialView("TaskModa", model);
 		}
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)
@@ -155,6 +163,7 @@ namespace Tasky.Controllers
                 return PartialView("TaskShowModal",task);
 			
 			}
+			
 			else
 			{
                 
@@ -196,6 +205,85 @@ namespace Tasky.Controllers
 			ApplicationUser user = db.ApplicationUsers.Include("Projects.Project").Where(m => m.Id.Equals(_userManager.GetUserId(User))).First();
 
             return View(user);
+		}
+        public IActionResult AddMember(int project_id)
+        {
+            ViewBag.project = project_id;
+            return View();
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+
+        public IActionResult AddMember(int project_id,string email)
+		{
+			ApplicationUser user = db.ApplicationUsers.Where(m => m.Email.Equals(email)).FirstOrDefault();
+			//check if the user with the certain email exists
+			if (user != null) {
+
+				//check if member is in prokect
+                ApplicationUserProject projectUser = db.ApplicationUserProjects.Where(m=>m.ProjectId == project_id && m.UserId==user.Id).FirstOrDefault();
+				if (projectUser != null)
+				{
+                    TempData["message"] = "Member already in project";
+                    TempData["messageClass"] = "alert-danger";
+                }
+				else
+				{
+                    projectUser = new ApplicationUserProject();
+                    projectUser.ProjectId = project_id;
+                    projectUser.UserId = user.Id;
+					//check if the project user model is valid
+                    if (ModelState.IsValid)
+                    {
+                        db.ApplicationUserProjects.Add(projectUser);
+                        db.SaveChanges();
+                        TempData["message"] = "Member Added successfully";
+                        TempData["messageClass"] = "alert-success";
+                    }
+
+                    else
+                    {
+                        TempData["message"] = "Error";
+                        TempData["messageClass"] = "alert-danger";
+                    }
+                }
+               
+            }
+            else
+            {
+                TempData["message"] = "Invalid Email";
+                TempData["messageClass"] = "alert-danger";
+               
+            }
+            return Redirect("/Projects/Show/" + project_id);
+        }
+
+		[NonAction]
+		public IEnumerable<SelectListItem> GetAllUsers(int? projectid)
+		{
+			// generam o lista de tipul SelectListItem fara elemente
+			var selectList = new List<SelectListItem>();
+
+            // extragem toate categoriile din baza de date .Include("ApplicationUsers")
+            var users = from user in db.ApplicationUserProjects.Where(m => m.ProjectId.Equals(projectid))
+                        select user;
+
+			// iteram prin categorii
+			foreach (var user in users)
+			{
+                ApplicationUser us = db.ApplicationUsers.Where(m => m.Id.Equals(user.UserId)).FirstOrDefault();
+                // adaugam in lista elementele necesare pentru dropdown
+                // id-ul categoriei si denumirea acesteia
+                selectList.Add(new SelectListItem
+				{
+					Value = user.UserId.ToString(),
+					
+					Text = us.UserName.ToString()
+				});
+			}
+
+			return selectList;
 		}
 	}
 }

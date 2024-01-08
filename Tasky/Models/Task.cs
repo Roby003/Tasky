@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.VisualBasic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tasky.Models
 {
@@ -18,9 +20,17 @@ namespace Tasky.Models
         public DateTime? DataFinalizare { get; set; }
         public string? Media { get; set; }
         public int? ProjectId { get; set; }
-        public virtual Project? Project { get; set; }
 
-        public virtual ICollection<Comment>? Comments { get; set; } 
+        public string? UserId { get; set; }
+        public virtual Project? Project { get; set; }
+        public virtual ApplicationUser? User { get; set; }
+
+
+        public virtual ICollection<Comment>? Comments { get; set; }
+        [NotMapped]
+        public IEnumerable<SelectListItem>? Users { get; set; }
+        
+
 
 
 

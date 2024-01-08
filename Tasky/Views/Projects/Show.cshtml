@@ -4,7 +4,13 @@
 @{
 }
 @model Tasky.Models.Project
-<h2 class="card-title"> @Model.Name </h2>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="card-title">@Model.Name</h2>
+        <a href="@Url.Action("AddMember", "Projects", new { project_id = @Model.Id })" class="btn btn-primary">Add Member</a>
+    </div>
+    <!-- Rest of your card content -->
+</div>
 
 
 @* <div class="card-body">
@@ -80,7 +86,7 @@
                 }
                 <br />
                 </div>
-                <button class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{id=Model.Id})">Add Task</button>
+                <button class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{projectId=Model.Id})">Add Task</button>
 
             </div>
         </div>
