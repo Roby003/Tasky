@@ -27,7 +27,7 @@
 
                     <div class="form-group">
                         <label for="taskDescription">Description:</label>
-                        <input type="text" class="form-control" name="Descriere" placeholder="@Model.Descriere" />
+                        <input type="text" class="form-control" name="Descriere" value="@Model.Descriere" />
                         @Html.ValidationMessage("Descriere",null,new{@class="text-danger"})
                     </div>
                     <div class="form-group">
@@ -44,7 +44,13 @@
                     </div>
                     <div class="form-group">
                         <label for="taskMedia">Media:</label>
-                        <input type="text" class="form-control" name="Media" placeholder="@Model.Media" />
+                        <input type="text" class="form-control" name="Media" value="@Model.Media" />
+                    </div>
+                    <div class="form-group">
+                        <label>Selectati membru responsabil</label>
+                        @Html.DropDownListFor(m => m.UserId,
+                        new SelectList(Model.Users, "Value", "Text"),
+                        "Selectati membru", new { @class = "form-control" })
                     </div>
                     <div class="form-group">
                         <label>Selectati membru responsabil</label>

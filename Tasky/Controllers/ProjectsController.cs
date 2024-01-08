@@ -60,13 +60,13 @@ namespace Tasky.Controllers
 
             if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
             {
-                //aici e bugul
+				//aici e bugul
                 if (TempData.ContainsKey("message"))
                 {
                     ViewBag.Message = TempData["message"];
                     ViewBag.Alert = TempData["messageClass"];
                 }
-                /*if (TempData.ContainsKey("modalName"))
+				/*if (TempData.ContainsKey("modalName"))
 					ViewBag.modalName = TempData["modalName"];*/
 
                 return View(project);
@@ -80,50 +80,50 @@ namespace Tasky.Controllers
         public IActionResult AddTask([FromForm] Models.Task task)
         {
 
-            Project project = db.Projects.Find(task.ProjectId);
-            if (ModelState.IsValid)
-            {
-                if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
-                {
-                    Models.Task t = db.Tasks.Find(task.Id);
-                    if (t != null)
-                    {
-                        t.UserId = task.UserId;
-                        t.Descriere = task.Descriere;
-                        t.DataFinalizare = task.DataFinalizare;
-                        t.DataStart = task.DataStart;
-                        t.Media = task.Media;
-                    }
-                    else
-                    {
-                        db.Tasks.Add(task);
-                    }
-                    db.SaveChanges();
-                    TempData["message"] = "task updated successfully";
-                    TempData["messageClass"] = "alert-success";
+			Project project = db.Projects.Find(task.ProjectId);
+			if (ModelState.IsValid)
+			{
+				if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+				{
+					Models.Task t = db.Tasks.Find(task.Id);
+					if (t != null)
+					{
+						t.UserId = task.UserId;
+						t.Descriere = task.Descriere;
+						t.DataFinalizare = task.DataFinalizare;
+						t.DataStart = task.DataStart;
+						t.Media = task.Media;
+					}
+					else
+					{
+						db.Tasks.Add(task);
+					}
+					db.SaveChanges();
+					TempData["message"] = "task updated successfully";
+					TempData["messageClass"] = "alert-success";
                     task.Users = GetAllUsers(task.ProjectId);
                     return PartialView("TaskModa", task);
                 }
                 else
-                {
-                    TempData["message"] = "you can't handle a task if you are not an organizer";
-                    TempData["messageClass"] = "alert-danger";
+				{
+					TempData["message"] = "you can't handle a task if you are not an organizer";
+					TempData["messageClass"] = "alert-danger";
 
                     return Redirect("/Projects/Show/" + project.Id);
                 }
-            }
-            else
-            {
-                task.Users = GetAllUsers(task.ProjectId);
+			}
+			else
+			{
+				task.Users = GetAllUsers(task.ProjectId);
                 return PartialView("TaskModa", task);
-            }
-        }
-        public IActionResult AddTask(int? projectId = null, int? taskId = null)
-        {
-            //same method for edit and create
-            var model = new Models.Task();
-            if (taskId == null)
-            {
+			}
+		}
+		public IActionResult AddTask(int? projectId=null,int? taskId=null)
+		{
+			//same method for edit and create
+			var model = new Models.Task();
+			if (taskId == null)
+			{
 
                 model.ProjectId = projectId;
             }
@@ -131,14 +131,14 @@ namespace Tasky.Controllers
 
             { model = db.Tasks.Find(taskId); }
 
-            model.Users = GetAllUsers(model.ProjectId);
+			model.Users = GetAllUsers(model.ProjectId);
 
 
             return PartialView("TaskModa", model);
-        }
-        [HttpPost]
-        public IActionResult AddComment([FromForm] Comment comment)
-        {
+		}
+		[HttpPost]
+		public IActionResult AddComment([FromForm] Comment comment)
+		{
             var task = db.Tasks.Include("Comments").Where(m => m.Id == comment.TaskId).First();
             Project project = db.Projects.Find(task.ProjectId);
 
@@ -161,14 +161,14 @@ namespace Tasky.Controllers
                 }
                 db.SaveChanges();
                 TempData["messageClass"] = "alert-success";
-                return PartialView("TaskShowModal", task);
-
-            }
-
-            else
-            {
-
-                return PartialView("TaskShowModal", task);
+                return PartialView("TaskShowModal",task);
+			
+			}
+			
+			else
+			{
+                
+                return PartialView("TaskShowModal" , task);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Tasky.Controllers
             ApplicationUser user = db.ApplicationUsers.Include("Projects.Project").Where(m => m.Id.Equals(_userManager.GetUserId(User))).First();
 
             return View(user);
-        }
+		}
         public IActionResult AddMember(int project_id)
         {
             ViewBag.project = project_id;
@@ -216,26 +216,25 @@ namespace Tasky.Controllers
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
 
-        public IActionResult AddMember(int project_id, string email)
-        {
-            ApplicationUser user = db.ApplicationUsers.Where(m => m.Email.Equals(email)).FirstOrDefault();
-            //check if the user with the certain email exists
-            if (user != null)
-            {
+        public IActionResult AddMember(int project_id,string email)
+		{
+			ApplicationUser user = db.ApplicationUsers.Where(m => m.Email.Equals(email)).FirstOrDefault();
+			//check if the user with the certain email exists
+			if (user != null) {
 
-                //check if member is in project
-                ApplicationUserProject projectUser = db.ApplicationUserProjects.Where(m => m.ProjectId == project_id && m.UserId == user.Id).FirstOrDefault();
-                if (projectUser != null)
-                {
+				//check if member is in prokect
+                ApplicationUserProject projectUser = db.ApplicationUserProjects.Where(m=>m.ProjectId == project_id && m.UserId==user.Id).FirstOrDefault();
+				if (projectUser != null)
+				{
                     TempData["message"] = "Member already in project";
                     TempData["messageClass"] = "alert-danger";
                 }
-                else
-                {
+				else
+				{
                     projectUser = new ApplicationUserProject();
                     projectUser.ProjectId = project_id;
                     projectUser.UserId = user.Id;
-                    //check if the project user model is valid
+					//check if the project user model is valid
                     if (ModelState.IsValid)
                     {
                         db.ApplicationUserProjects.Add(projectUser);
@@ -250,42 +249,42 @@ namespace Tasky.Controllers
                         TempData["messageClass"] = "alert-danger";
                     }
                 }
-
+               
             }
             else
             {
                 TempData["message"] = "Invalid Email";
                 TempData["messageClass"] = "alert-danger";
-
+               
             }
             return Redirect("/Projects/Show/" + project_id);
         }
 
-        [NonAction]
-        public IEnumerable<SelectListItem> GetAllUsers(int? projectid)
-        {
-            // generam o lista de tipul SelectListItem fara elemente
-            var selectList = new List<SelectListItem>();
+		[NonAction]
+		public IEnumerable<SelectListItem> GetAllUsers(int? projectid)
+		{
+			// generam o lista de tipul SelectListItem fara elemente
+			var selectList = new List<SelectListItem>();
 
             // extragem toate categoriile din baza de date .Include("ApplicationUsers")
             var users = from user in db.ApplicationUserProjects.Where(m => m.ProjectId.Equals(projectid))
                         select user;
 
-            // iteram prin categorii
-            foreach (var user in users)
-            {
+			// iteram prin categorii
+			foreach (var user in users)
+			{
                 ApplicationUser us = db.ApplicationUsers.Where(m => m.Id.Equals(user.UserId)).FirstOrDefault();
                 // adaugam in lista elementele necesare pentru dropdown
                 // id-ul categoriei si denumirea acesteia
                 selectList.Add(new SelectListItem
-                {
-                    Value = user.UserId.ToString(),
+				{
+					Value = user.UserId.ToString(),
+					
+					Text = us.UserName.ToString()
+				});
+			}
 
-                    Text = us.UserName.ToString()
-                });
-            }
-
-            return selectList;
-        }
-    }
+			return selectList;
+		}
+	}
 }

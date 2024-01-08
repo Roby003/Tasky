@@ -29,7 +29,7 @@ namespace Tasky.Models
         public virtual ICollection<Comment>? Comments { get; set; }
         [NotMapped]
         public IEnumerable<SelectListItem>? Users { get; set; }
-
+        
 
 
 
