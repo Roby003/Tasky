@@ -2,7 +2,156 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasky - Your Task Manager</title>
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        section {
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .tasks {
+            margin-top: 20px;
+        }
+
+        .task {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .task button {
+                background-color: #e74c3c;
+                color: #fff;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body>
+
+    <header class="text-center">
+        <h1>Tasky - Your Task Manager</h1>
+        <div class="container" style="width:800px;">
+
+            <h6 class="text-muted" style="font-style: italic; margin-top: 10px; line-height: 1.5;">
+                Use Tasky to track, manage, complete,
+                and bring tasks together like the pieces
+                of a puzzle, and make your team's
+                projects a cohesive success every time.
+            </h6>
+        </div>
+    </header>
+
+
+    <section>
+        <h2>Welcome to Tasky!</h2>
+        <p>Keep your tasks organized and stay productive.</p>
+
+        <div class="row my-5">
+
+            <div class="col-3">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Boards</h5>
+                        <p class="card-text">Tasky keeps tasks organized and work moving forward</p>
+                    </div>
+                </div>
+
+            </div>
+            @* <div class="col-8 mx-4"> *@
+            <div class="col-8 mx-4 d-flex justify-content-center align-items-center">
+
+                <img src="https://i.imgur.com/rWtBvk5.png" class="img-rounded" alt="Tasky Image" style="max-width: 80%; height: auto;">
+            </div>
+
+        </div>
+
+        <div class="row my-5">
+
+            <div class="col-3">
+                <div class="card my-4" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Lists</h5>
+                        <p class="card-text">The different stages of a task, Not Started-In Progress-Completed. Organize your tasks accordingly</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-8 mx-4 d-flex justify-content-center align-items-center">
+                <img src="https://i.imgur.com/NplUlZZ.png" class="img-rounded" alt="Tasky Image" style="max-width: 30%; height: auto;">
+            </div>
+
+        </div>
+        <div class="row my-5">
+
+            <div class="col-3">
+                <div class="card my-4" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Cards</h5>
+                        <p class="card-text">Cards represent tasks and ideas and hold all the information to get the job done. As you make progress, move cards across lists to change their status</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-8 mx-4 d-flex justify-content-center align-items-center">
+                <img src="https://i.imgur.com/YK3vKLN.png" class="img-rounded mx-4 py-3" alt="Tasky Image" style="max-width: 30%; height: auto;">
+                <img src="https://i.imgur.com/ClOAhWW.png" class="img-rounded" alt="Tasky Image" style="max-width: 60%; max-height: 262.217px;">
+
+            </div>
+
+        </div>
+        
+
+    </section>
+
+
+    <!-- Add your JavaScript for task manipulation here -->
+
+</body>
+</html>

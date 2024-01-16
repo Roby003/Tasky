@@ -57,10 +57,15 @@
                             <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
-                                <p class="card-text"><strong>Media:</strong> @task.Media</p>
                                 <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
+                                    @if (@task.User != null)
+                                    {
+                                        <p class="card-text"><strong>Membru Responsabil:</strong> @task.User.UserName</p>
+
+                                    }
+
                                 @* edit task *@
                                     <div class="container d-flex justify-content-between ps-0">
                                         <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">  
@@ -99,11 +104,15 @@
                     {
                         <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
-                                <h5 class="card-title">@task.Descriere</h5>
-                                <p class="card-text"><strong>Media:</strong> @task.Media</p>
+                                <h5 class="card-title">@task.Descriere</h5>                              
                                 <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
+                                @if (@task.User != null)
+                                {
+                                    <p class="card-text"><strong>Membru Responsabil:</strong> @task.User.UserName</p>
+
+                                }
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
                                     <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">
@@ -139,10 +148,14 @@
                         <div class="card mb-3" draggable="true" data-task-id="@task.Id">
                             <div class="card-body">
                                 <h5 class="card-title">@task.Descriere</h5>
-                                <p class="card-text"><strong>Media:</strong> @task.Media</p>
                                 <p class="card-text"><strong>Status:</strong> <span id="status"> @task.Status</span></p>
                                 <p class="card-text"><strong>Start Date:</strong> @task.DataStart?.ToShortDateString()</p>
                                 <p class="card-text"><strong>Deadline:</strong> @task.DataFinalizare?.ToShortDateString()</p>
+                                @if (@task.User != null)
+                                {
+                                    <p class="card-text"><strong>Membru Responsabil:</strong> @task.User.UserName</p>
+
+                                }
                                 @* edit task *@
                                 <div class="container d-flex justify-content-between ps-0">
                                     <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#taskModal" data-url="@Url.Action("AddTask",new{ taskId=@task.Id})">

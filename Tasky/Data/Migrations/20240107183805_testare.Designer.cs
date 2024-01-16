@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Data;
 namespace Tasky.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240107183805_testare")]
+    partial class testare
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,9 +234,14 @@ namespace Tasky.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId", "ProjectId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("TaskId");
 
                     b.ToTable("ApplicationUserProjects");
                 });
@@ -392,6 +399,10 @@ namespace Tasky.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Tasky.Models.Task", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TaskId");
+
                     b.HasOne("Tasky.Models.ApplicationUser", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId")
@@ -450,6 +461,8 @@ namespace Tasky.Migrations
             modelBuilder.Entity("Tasky.Models.Task", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

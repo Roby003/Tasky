@@ -1,4 +1,4 @@
-﻿using Humanizer;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,8 @@ using Tasky.Models;
 
 namespace Tasky.Controllers
 {
-	public class ProjectsController : Controller
+    [Authorize(Roles = "User,Admin")]
+    public class ProjectsController : Controller
 	{
 		private readonly ApplicationDbContext db;
 		private readonly UserManager<ApplicationUser> _userManager;
@@ -23,14 +24,14 @@ namespace Tasky.Controllers
 			_userManager = userManager;
 		}
 
-		[Authorize(Roles = "User,Admin")]
+		
 		public IActionResult New()
 		{
 			Project project = new Project();
 
 			return View(project);
 		}
-		[Authorize(Roles = "User,Admin")]
+		
 		[HttpPost]
 		public IActionResult New(Project project) {
 			
@@ -54,12 +55,13 @@ namespace Tasky.Controllers
 
 		public IActionResult Show(int id)
 		{
-            Project project = db.Projects.Include("ApplicationUsers").Include("Tasks.Comments.User").Where(m => m.Id == id).First();
+			/// application users ar trb sa se numeasca projects user
+            Project project = db.Projects.Include("ApplicationUsers").Include("Tasks.Comments.User").Include("Tasks.User").Where(m => m.Id == id).First();
 
 
-			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)))
+			if (project.ApplicationUsers.Any(u => u.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
             {
-				//aici e bugul
+				
                 if (TempData.ContainsKey("message"))
                 {
                     ViewBag.Message = TempData["message"];
@@ -138,7 +140,7 @@ namespace Tasky.Controllers
 		[HttpPost]
 		public IActionResult AddComment([FromForm] Comment comment)
 		{
-            var task = db.Tasks.Include("Comments").Where(m => m.Id == comment.TaskId).First();
+            var task = db.Tasks.Include("Comments.User").Where(m => m.Id == comment.TaskId).First();
             Project project = db.Projects.Find(task.ProjectId);
 			
 			comment.Date= DateTime.Now;
@@ -173,7 +175,7 @@ namespace Tasky.Controllers
 		
 		public IActionResult ShowTask(int TaskId)
 		{
-			var task = db.Tasks.Include("Comments").Where(m=> m.Id==TaskId).First();
+			var task = db.Tasks.Include("Project").Include("Comments.User").Where(m=> m.Id==TaskId).First();
 			return PartialView("TaskShowModal", task);
 		}
 		[HttpPost]
@@ -202,9 +204,29 @@ namespace Tasky.Controllers
         }
 		public IActionResult Index()
 		{
-			ApplicationUser user = db.ApplicationUsers.Include("Projects.Project").Where(m => m.Id.Equals(_userManager.GetUserId(User))).First();
+            List <ApplicationUserProject> userProjects = db.ApplicationUserProjects.Where(m => m.UserId.Equals(_userManager.GetUserId(User))).ToList();
+			List<Project> projects = new List<Project>();
 
-            return View(user);
+
+            if (User.IsInRole("Admin"))
+			{
+                projects = db.Projects.ToList();
+
+            }
+			else
+			{
+				foreach(var p in userProjects)
+				{
+					Project project = db.Projects.Where(m => m.Id.Equals(p.ProjectId)).First();
+					projects.Add(project);
+
+                }
+                //projects = db.Projects.Where(m => m.OrganizerId.Equals(_userManager.GetUserId(User))).ToList();
+
+            }
+
+
+            return View(projects);
 		}
         public IActionResult AddMember(int project_id)
         {
@@ -258,6 +280,43 @@ namespace Tasky.Controllers
             }
             return Redirect("/Projects/Show/" + project_id);
         }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+		{
+			var project = db.Projects.Include("Tasks").Include("Tasks.Comments").Where(m => m.Id == id).FirstOrDefault();
+			if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+			{
+				db.Projects.Remove(project);
+				foreach(Models.Task task in project.Tasks)
+				{
+                    db.Comments.RemoveRange(task.Comments);
+                }
+                db.Tasks.RemoveRange(project.Tasks);
+                db.SaveChanges();
+				return RedirectToAction("Index");
+			}
+			else
+				return View(project);
+		}
+
+        [HttpPost]
+        public IActionResult DeleteTask(int id)
+		{
+			var task = db.Tasks.Include("Comments").Where(m => m.Id == id).First();
+			var project = db.Projects.Find(task.ProjectId);
+			if (project.OrganizerId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+			{
+				db.Tasks.Remove(task);
+				db.Comments.RemoveRange(task.Comments);
+				db.SaveChanges();
+				return Redirect("/Projects/Show/" + project.Id);
+			}
+			else
+				return Redirect("/Projects/Index");
+
+
+		}
 
 		[NonAction]
 		public IEnumerable<SelectListItem> GetAllUsers(int? projectid)

@@ -60,7 +60,7 @@
                                     <script src="https://cdn.tailwindcss.com"></script>
                                     <div class="relative w-full  h-full mx-auto mt-7 rounded-lg overflow-hidden">
                                         <div class="h-0 pt-[56.25%]">
-                                            <iframe class="w-full h-full absolute top-0 left-0 " src="@Model.Media" title="YouTube video player"
+                                            <iframe class="w-full h-full absolute top-0 left-0 overflow-hidden " src="@Model.Media" title="YouTube video player"
                                                     frameborder="0" seamless="seamless"
                                                     allowfullscreen
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share;">
@@ -135,12 +135,24 @@
                         else
                         {
                         <div class="container my-2 mx-2">
+                            
                     <label><b>@comm.User.UserName</b> <small>@comm.Date</small></label>
                         <p>@comm.Content</p>
                         </div>
                         }
                 }
                 </div>
+                @{
+                    if (User.IsInRole("Admin") || userId == Model.Project.OrganizerId)
+                    {
+
+
+                        <form method="post" action="/Projects/DeleteTask/@Model.Id" class="d-flex justify-content-end align-items-center">
+                            <button class="btn btn-sm btn-danger" type="submit"><small>Remove task</small></button>
+
+                        </form>
+                    }
+                }
             </div>
         </div>
     </div>

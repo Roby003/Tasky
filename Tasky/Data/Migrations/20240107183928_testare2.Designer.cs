@@ -12,8 +12,8 @@ using Tasky.Data;
 namespace Tasky.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231211195927_test1")]
-    partial class test1
+    [Migration("20240107183928_testare2")]
+    partial class testare2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -234,11 +234,47 @@ namespace Tasky.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId", "ProjectId");
 
                     b.HasIndex("ProjectId");
 
+                    b.HasIndex("TaskId");
+
                     b.ToTable("ApplicationUserProjects");
+                });
+
+            modelBuilder.Entity("Tasky.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Tasky.Models.Project", b =>
@@ -270,17 +306,18 @@ namespace Tasky.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DataFinalizare")
+                    b.Property<DateTime?>("DataFinalizare")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataStart")
+                    b.Property<DateTime?>("DataStart")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descriere")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Media")
                         .HasColumnType("nvarchar(max)");
@@ -291,11 +328,14 @@ namespace Tasky.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
                 });
@@ -359,6 +399,10 @@ namespace Tasky.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Tasky.Models.Task", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TaskId");
+
                     b.HasOne("Tasky.Models.ApplicationUser", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId")
@@ -370,17 +414,34 @@ namespace Tasky.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Tasky.Models.Comment", b =>
+                {
+                    b.HasOne("Tasky.Models.Task", "Task")
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId");
+
+                    b.HasOne("Tasky.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Tasky.Models.Task", b =>
                 {
-                    b.HasOne("Tasky.Models.ApplicationUser", null)
-                        .WithMany("Tasks")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Tasky.Models.Project", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId");
 
+                    b.HasOne("Tasky.Models.ApplicationUser", "User")
+                        .WithMany("Tasks")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Tasky.Models.ApplicationUser", b =>
@@ -395,6 +456,13 @@ namespace Tasky.Migrations
                     b.Navigation("ApplicationUsers");
 
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("Tasky.Models.Task", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

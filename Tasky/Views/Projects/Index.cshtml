@@ -3,18 +3,28 @@
 *@
 @{
 }
-@model Tasky.Models.ApplicationUser
-<div class="container mt-4">
+@model List<Tasky.Models.Project>
+<div class="container my-lg-4 m-4 m-sm-3 m-md-2 m-lg-4 m-xl-5">
     <h2 class="text-center">My Boards</h2>
 
-    @foreach (var project in Model.Projects)
+    @foreach (var project in Model)
     {
         <div class="card mt-3">
             <div class="card-body d-flex justify-content-between align-items-center">
-                <h5 class="card-title">@project.Project.Name</h5>
-                <a class="btn btn-primary" href="/Projects/Show/@project.ProjectId">View Board</a>
+                <h5 class="card-title">@project.Name</h5>
+                <div>
+                    <a class="btn btn-primary my-1" href="/Projects/Show/@project.Id">View Board</a>
+                    
+                    <form method="post" action="/Projects/Delete/@project.Id">
+                        <button class="btn btn-sm btn-danger my-2" type="submit"><small>Remove project</small></button>
+
+                    </form>
+                    </div>
+                
             </div>
         </div>
     }
     <a href="/Projects/New" class="btn btn-primary mt-3">Add Project</a>
 </div>
+<br\>
+</br\>
