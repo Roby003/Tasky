@@ -9,11 +9,11 @@ namespace Tasky.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage ="Description is mandatory")]
+        [Required(ErrorMessage = "Description is mandatory")]
         [StringLength(100, ErrorMessage = "The maximum length permitted is 100 characters")]
         public string? Descriere { get; set; }
         public string? Status { get; set; }
-        [Required(ErrorMessage ="The task must have a start date")]
+        [Required(ErrorMessage = "The task must have a start date")]
         public DateTime? DataStart { get; set; }
         [Required(ErrorMessage = "The task must have an end date")]
 

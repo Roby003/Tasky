@@ -37,21 +37,21 @@ namespace Tasky.Controllers
 			
 			string id = _userManager.GetUserId(User);
             project.OrganizerId = id;
-			
-			if (ModelState.IsValid)
-			{
-				db.Projects.Add(project);
-				
+
+            if (ModelState.IsValid)
+            {
+                db.Projects.Add(project);
+
                 db.SaveChanges();
                 ApplicationUserProject projectUser = new ApplicationUserProject();
                 projectUser.ProjectId = project.Id;
                 projectUser.UserId = id;
                 db.ApplicationUserProjects.Add(projectUser);
-				db.SaveChanges();
+                db.SaveChanges();
                 return Redirect("/Projects/Show/" + project.Id);
-			}
-			else return View(project);
-		}
+            }
+            else return View(project);
+        }
 
 		public IActionResult Show(int id)
 		{
@@ -71,15 +71,15 @@ namespace Tasky.Controllers
 					ViewBag.modalName = TempData["modalName"];*/
 
                 return View(project);
-			}
+            }
 
-			return RedirectToAction("Index");
+            return RedirectToAction("Index");
 
         }
-		/*Show folosit pentru a adauga sau a edita taskuri*/
-		[HttpPost]
-		public IActionResult AddTask([FromForm] Models.Task task)
-		{
+        /*Show folosit pentru a adauga sau a edita taskuri*/
+        [HttpPost]
+        public IActionResult AddTask([FromForm] Models.Task task)
+        {
 
 			Project project = db.Projects.Find(task.ProjectId);
 			if (ModelState.IsValid)
@@ -126,11 +126,11 @@ namespace Tasky.Controllers
 			if (taskId == null)
 			{
 
-				model.ProjectId = projectId;
-			}
-			else
+                model.ProjectId = projectId;
+            }
+            else
 
-			{ model = db.Tasks.Find(taskId); }
+            { model = db.Tasks.Find(taskId); }
 
 			model.Users = GetAllUsers(model.ProjectId);
 
@@ -142,21 +142,21 @@ namespace Tasky.Controllers
 		{
             var task = db.Tasks.Include("Comments.User").Where(m => m.Id == comment.TaskId).First();
             Project project = db.Projects.Find(task.ProjectId);
-			
-			comment.Date= DateTime.Now;
-			comment.UserId= _userManager.GetUserId(User);
-			if (ModelState.IsValid)
-			{
-				Comment c=db.Comments.Find(comment.Id);
-				if (c != null)
-				{
-					c.Content = comment.Content;
+
+            comment.Date = DateTime.Now;
+            comment.UserId = _userManager.GetUserId(User);
+            if (ModelState.IsValid)
+            {
+                Comment c = db.Comments.Find(comment.Id);
+                if (c != null)
+                {
+                    c.Content = comment.Content;
                     TempData["message"] = "comment modified successfully";
 
                 }
                 else
-				{
-					db.Comments.Add(comment);
+                {
+                    db.Comments.Add(comment);
                     TempData["message"] = "comment created successfully";
 
                 }
@@ -185,18 +185,18 @@ namespace Tasky.Controllers
             Models.Task task = db.Tasks.Find(comm.TaskId);
             Project project = db.Projects.Find(task.ProjectId);
             if (comm == null)
-				return Redirect("/Projects/Index");
-			if( comm.UserId==_userManager.GetUserId(User) || User.IsInRole("Admin"))
-			{ 
-				
-				db.Remove(comm);
-				db.SaveChanges();
-				TempData["message"] = "Comment removed";
-				TempData["messageClass"] = "alert-success";
+                return Redirect("/Projects/Index");
+            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+
+                db.Remove(comm);
+                db.SaveChanges();
+                TempData["message"] = "Comment removed";
+                TempData["messageClass"] = "alert-success";
                 return Redirect("/Projects/Show/" + project.Id);
             }
             else
-			{
+            {
                 TempData["message"] = "Comment removed";
                 TempData["messageClass"] = "alert-success";
                 return Redirect("/Projects/Show/" + project.Id);
